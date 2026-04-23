@@ -17,7 +17,7 @@ const Home = () => {
               <img src="/asset/logo_game/mlbb.png" alt="" width="180" className="home-gameicon" />
               <p className="home-gametitle">Mobile Legends: Bang Bang</p>
             </Link>
-            <Link to="#" className="home-gamecard">
+            <Link to="/game/roblox" className="home-gamecard">
               <img src="/asset/logo_game/roblox.png" alt="" width="180" className="home-gameicon" />
               <div className="home-gametitle">Roblox Gift Card </div>
             </Link>
@@ -25,7 +25,7 @@ const Home = () => {
               <img src="/asset/logo_game/valorant.png" alt="" width="180" className="home-gameicon" />
               <div className="home-gametitle">valorant</div>
             </Link>
-            <Link to="#" className="home-gamecard">
+            <Link to="/game/coc" className="home-gamecard">
               <img src="/asset/logo_game/coc.png" alt="" width="180" className="home-gameicon" />
               <div className="home-gametitle">Clash Of Clans</div>
             </Link>
