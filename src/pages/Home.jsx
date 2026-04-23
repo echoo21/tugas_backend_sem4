@@ -14,7 +14,7 @@ const Home = () => {
           <div className="home-audiowide-regular">GAMES</div>
           <div className="home-game-container">
             <Link to="/game/mlbb" className="home-gamecard">
-              <img src="/asset/logo_game/mlbb.png" alt="" width="180" className="home-gameicon" />
+              <img src="./asset/logo_game/mlbb.png" alt="" width="180" className="home-gameicon" />
               <p className="home-gametitle">Mobile Legends: Bang Bang</p>
             </Link>
             <Link to="#" className="home-gamecard">
