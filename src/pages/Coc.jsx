@@ -1,18 +1,21 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/Valo.css";
+import "../styles/Coc.css";
 import Notification from "../components/Notification";
 
 const listDiamond = [
-    { qty: 475, price: 56000, disc: 5, discPrice: 53200 },
-    { qty: 1000, price: 120000, disc: 7, discPrice: 111600 },
-    { qty: 2050, price: 225000, disc: 9, discPrice: 204750 },
-    { qty: 3650, price: 385000, disc: 10, discPrice: 346500 },
-    { qty: 5350, price: 552500, disc: 13, discPrice: 480675 },
-    { qty: 11000, price: 1300000, disc: 11, discPrice: 1157000 },
-    { qty: 25000, price: 2690000, disc: 14, discPrice: 2313400 },
-    { qty: 52500, price: 5000000, disc: 19, discPrice: 4050000 },
-
+  { qty: 3, price: 10000, disc: 5, discPrice: 9500 },
+  { qty: 50, price: 12000, disc: 7, discPrice: 10800 },
+  { qty: 73, price: 14000, disc: 9, discPrice: 12600 },
+  { qty: 89, price: 16000, disc: 10, discPrice: 14400 },
+  { qty: 110, price: 18000, disc: 13, discPrice: 16200 },
+  { qty: 330, price: 20000, disc: 11, discPrice: 18000 },
+  { qty: 490, price: 21000, disc: 14, discPrice: 23100 },
+  { qty: 1090, price: 50000, disc: 19, discPrice: 30000 },
+  { qty: 1450, price: 400000, disc: 20, discPrice: 320000 },
+  { qty: 2195, price: 600000, disc: 22, discPrice: 468000 },
+  { qty: 3688, price: 1000000, disc: 25, discPrice: 750000 },
+  { qty: 5532, price: 1500000, disc: 30, discPrice: 1050000 }
 
 ];
 
@@ -21,9 +24,9 @@ const DiamondCard = ({ qty, price, disc, discPrice, index, activeIndex, setActiv
     <>
       <div className="col p-2">
           <div className={`game-card card ${index === activeIndex ? 'active' : ''}`} onClick={() => setActiveDiamondIndex(index === activeIndex ? null : index)}>
-            <p>{qty} Valorant Points </p>
+            <p>{qty} Gem</p>
             <div className="game-img-container">
-              <img src="/asset/logo_game/VP.png" alt="" />
+              <img src="/asset/logo_game/diamond.png" alt="" />
             </div>
             <div className="game-card-bottom">
               <p>Dari</p>
@@ -66,7 +69,7 @@ const PaymentCard = ({name, imgSrc, index, activeIndex, setActivePaymentIndex}) 
   );
 };
 
-const Valorant = () => {
+const Coc = () => {
   const navigate = useNavigate()
   const [userID, setUserID] = useState("")
   const [zoneID, setZoneID] = useState("")
@@ -84,11 +87,15 @@ const Valorant = () => {
 
   const handleClick = () => {
     if (userID === null || userID.trim() === "") {
-      setNotification({msg : "Silahkan Masukan Riot ID", id : Date.now()})
+      setNotification({msg : "Silahkan Masukan User ID", id : Date.now()})
+      return
+    }
+    if (zoneID === null || zoneID.trim() === "") {
+      setNotification({msg : "Silahkan Masukan Zone ID", id : Date.now()})
       return
     }
     if (activeDiamondIndex === null) {
-      setNotification({msg : "Silahkan Pilih Jumlah VP", id : Date.now()})
+      setNotification({msg : "Silahkan Pilih Jumlah Diamond", id : Date.now()})
       return
     } 
     if (activePaymentIndex === null){
@@ -111,17 +118,26 @@ const Valorant = () => {
   return (
     <main className="game-main">
       {notification && (<Notification key={notification.id} msg={notification.msg} />)}
-      <div className="game-bg-valorant"></div>
+      <div className="game-bg" style={{ backgroundImage: "url('/asset/logo_game/coc_bg.png')" }}></div>
       <div className="game-content">
         {/* ======= INPUT ID ======== */}
         <div className="game-input-container game-id-section mt-5">
-          <h2 className="game-title">Masukkan Riot ID</h2>
+          <h2 className="game-title">Masukkan User ID</h2>
           <div className="game-input-id-content">
             <div className="game-input-group">
-              <p>RIOT ID</p>
+              <p>USER ID</p>
               <div className="game-input-wrapper">
                 <span className="game-icon">👤</span>
-                <input type="text" placeholder="Masukkan Riot ID" onChange={(e) => {setUserID(e.target.value)}}/>
+                <input type="text" placeholder="Masukkan User ID" onChange={(e) => {setUserID(e.target.value)}}/>
+              </div>
+            </div>
+
+            <div className="game-input-group">
+              <p>ZONE ID</p>
+              <div className="game-input-wrapper">
+                <span className="game-icon">🌍</span>
+                <input type="text" placeholder="Zone ID" maxLength="4" onChange={(e)=>{setZoneID(e.target.value)}}/>
+                <span className="game-limit">4 DIGIT</span>
               </div>
             </div>
           </div>
@@ -175,4 +191,4 @@ const Valorant = () => {
   );
 };
 
-export default Valorant;
+export default Coc;
