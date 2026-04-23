@@ -3,7 +3,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
-import Game from './pages/Game';
+import Mlbb from './pages/Mlbb';
+import Coc from './pages/Coc';
+import Roblox from './pages/Roblox';
 import Pembayaran from './pages/Pembayaran';
 import History from './pages/History';
 import Promo from './pages/Promo';
@@ -46,7 +48,9 @@ function App() {
             <Header />
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/game/mlbb" element={<Game />} />
+              <Route path="/game/mlbb" element={<Mlbb />} />
+              <Route path="/game/roblox" element={<Roblox />} />
+              <Route path="/game/coc" element={<Coc />} />
               <Route path="/pembayaran" element={<Pembayaran />} />
               <Route path="/history" element={<History />} />
               <Route path="/promo" element={<Promo />} />

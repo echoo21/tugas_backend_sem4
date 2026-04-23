@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/Game.css";
+import "../styles/Mlbb.css";
 import Notification from "../components/Notification";
 
 const listDiamond = [
@@ -69,7 +69,7 @@ const PaymentCard = ({name, imgSrc, index, activeIndex, setActivePaymentIndex}) 
   );
 };
 
-const Game = () => {
+const Mlbb = () => {
   const navigate = useNavigate()
   const [userID, setUserID] = useState("")
   const [zoneID, setZoneID] = useState("")
@@ -118,7 +118,7 @@ const Game = () => {
   return (
     <main className="game-main">
       {notification && (<Notification key={notification.id} msg={notification.msg} />)}
-      <div className="game-bg"></div>
+      <div className="game-bg" style={{ backgroundImage: "url('/asset/logo_game/mlbb-kagura.png')" }}></div>
       <div className="game-content">
         {/* ======= INPUT ID ======== */}
         <div className="game-input-container game-id-section mt-5">
@@ -191,4 +191,4 @@ const Game = () => {
   );
 };
 
-export default Game;
+export default Mlbb;
