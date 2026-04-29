@@ -10,7 +10,7 @@ datasource db {
 
 model users {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  avatar    String?
+  avatar    Bytes?
   birthday  String?
   createdAt DateTime @db.Date
   email     String

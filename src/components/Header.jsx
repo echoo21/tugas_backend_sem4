@@ -7,17 +7,17 @@ const Header = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [filteredPages, setFilteredPages] = useState([]);
-
-  // 1. Tambahkan state baru untuk pesan error yang cantik
   const [errorMessage, setErrorMessage] = useState("");
+  const [avatarKey, setAvatarKey] = useState(() => Date.now()); // inisialisasi tanpa masalah karena di dalam useState
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const loadUserData = () => {
       try {
-        const authToken = localStorage.getItem("authToken");
-        const currentUser = localStorage.getItem("currentUser");
+        // ⚡ Ganti localStorage ke sessionStorage
+        const authToken = sessionStorage.getItem("authToken");
+        const currentUser = sessionStorage.getItem("currentUser");
 
         if (authToken && currentUser) {
           const user = JSON.parse(currentUser);
@@ -33,12 +33,8 @@ const Header = () => {
 
     loadUserData();
 
-    const handleStorageChange = (e) => {
-      if (e.key === "currentUser" || e.key === "authToken") {
-        loadUserData();
-      }
-    };
-
+    // ❌ Hapus listener 'storage' karena sessionStorage tidak men-support event ini
+    // Tetap pertahankan custom event untuk komunikasi antar komponen
     const handleUserLoggedIn = () => {
       console.log("User logged in event received");
       loadUserData();
@@ -53,16 +49,18 @@ const Header = () => {
       console.log("User data updated event received", e.detail);
       if (e.detail) {
         setUserData(e.detail);
+      } else {
+        // Jika event tanpa detail, reload dari sessionStorage
+        loadUserData();
+        setAvatarKey(Date.now()); // ⭐ trigger re-mount gambar
       }
     };
 
-    window.addEventListener("storage", handleStorageChange);
     window.addEventListener("userLoggedIn", handleUserLoggedIn);
     window.addEventListener("userLoggedOut", handleUserLoggedOut);
     window.addEventListener("userDataUpdated", handleUserDataUpdated);
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("userLoggedIn", handleUserLoggedIn);
       window.removeEventListener("userLoggedOut", handleUserLoggedOut);
       window.removeEventListener("userDataUpdated", handleUserDataUpdated);
@@ -99,8 +97,6 @@ const Header = () => {
   const handleInputChange = (e) => {
     const query = e.target.value;
     setSearchTerm(query);
-
-    // 2. Sembunyikan pesan error saat user mulai mengetik ulang
     setErrorMessage("");
 
     if (query.trim() === "") {
@@ -111,7 +107,7 @@ const Header = () => {
       const filtered = topupPages.filter(
         (page) =>
           page.name.toLowerCase().includes(lowerQuery) ||
-          page.keywords.some((keyword) => keyword.includes(lowerQuery)),
+          page.keywords.some((keyword) => keyword.includes(lowerQuery))
       );
       setFilteredPages(filtered);
       setShowDropdown(true);
@@ -122,7 +118,7 @@ const Header = () => {
     navigate(path);
     setSearchTerm("");
     setShowDropdown(false);
-    setErrorMessage(""); // Bersihkan error jika berhasil navigasi
+    setErrorMessage("");
   };
 
   const handleSearchSubmit = (e) => {
@@ -130,15 +126,20 @@ const Header = () => {
     if (filteredPages.length > 0) {
       handleSelectGame(filteredPages[0].path);
     } else if (searchTerm.trim() !== "") {
-      // 3. Ubah alert bawaan menjadi pemanggilan state error
       setErrorMessage(`Waduh, game "${searchTerm}" belum tersedia.`);
-
-      // Auto-hide pesan error setelah 3 detik
       setTimeout(() => {
         setErrorMessage("");
       }, 3000);
     }
   };
+
+  // ⚡ Bantu fungsi untuk mendapatkan src avatar yang benar
+  const getAvatarSrc = () => {
+  if (userData?.avatar) {
+    return userData.avatar; // sudah berupa endpoint seperti "/api/avatar/12345"
+  }
+  return "/asset/user.png";
+};
 
   return (
     <header>
@@ -165,29 +166,17 @@ const Header = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link
-                  className="nav-link active"
-                  aria-current="page"
-                  to="/promo"
-                >
+                <Link className="nav-link active" aria-current="page" to="/promo">
                   Promo
                 </Link>
               </li>
               <li className="nav-item">
-                <Link
-                  className="nav-link active"
-                  aria-current="page"
-                  to="/contact"
-                >
+                <Link className="nav-link active" aria-current="page" to="/contact">
                   Contact
                 </Link>
               </li>
               <li className="nav-item">
-                <Link
-                  className="nav-link active"
-                  aria-current="page"
-                  to="/login"
-                >
+                <Link className="nav-link active" aria-current="page" to="/login">
                   Login
                 </Link>
               </li>
@@ -214,7 +203,6 @@ const Header = () => {
                 Search
               </button>
 
-              {/* DROPDOWN PREVIEW */}
               {showDropdown && (
                 <div
                   className="dropdown-menu show position-absolute w-100 mt-1 shadow-sm"
@@ -257,16 +245,15 @@ const Header = () => {
                 </div>
               )}
 
-              {/* 4. TAMPILAN ERROR MESSAGE CANTIK DI SINI */}
               {errorMessage && (
                 <div
                   className="position-absolute shadow"
                   style={{
-                    top: "115%", // Muncul sedikit di bawah input bar
+                    top: "115%",
                     left: 0,
-                    width: "calc(100% - 85px)", // Menyesuaikan lebar tanpa menimpa tombol search
+                    width: "calc(100% - 85px)",
                     zIndex: 1050,
-                    background: "linear-gradient(135deg, #ff0055, #a100ff)", // Tema neon gaming
+                    background: "linear-gradient(135deg, #ff0055, #a100ff)",
                     color: "white",
                     padding: "10px 15px",
                     borderRadius: "8px",
@@ -295,8 +282,9 @@ const Header = () => {
                   aria-expanded="false"
                 >
                   <img
-                    src={userData?.avatar || "/asset/user.png"}
-                    alt="profile.png"
+                    key={avatarKey}
+                    src={getAvatarSrc()}  // ⚡ Gunakan fungsi pembantu
+                    alt="profile"
                     className="header-profile-icon"
                     style={{
                       width: "30px",
@@ -306,6 +294,7 @@ const Header = () => {
                       marginRight: "8px",
                       border: userData ? "2px solid #00f2ff" : "none",
                     }}
+                    onError={(e) => (e.target.src = "/asset/user.png")} // fallback jika error
                   />
                   <span
                     style={{

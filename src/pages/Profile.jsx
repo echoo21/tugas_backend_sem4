@@ -303,9 +303,16 @@ const Profile = () => {
   };
 
   // Handle avatar upload
+  // Handle avatar upload
   const handleAvatarUpload = async (e) => {
     const file = e.target.files[0];
     if (!file || !userData?.id) return;
+
+    // Validasi ukuran di frontend
+    if (file.size > 10 * 1024 * 1024) {
+      setErrors({ avatar: 'Ukuran gambar terlalu besar. Maksimal 10 MB.' });
+      return;
+    }
 
     const formDataUpload = new FormData();
     formDataUpload.append('avatar', file);
@@ -327,13 +334,25 @@ const Profile = () => {
         return;
       }
 
-      // Update state dengan URL avatar dari backend
-      const avatarUrl = result.data.avatar;
-      const updatedUser = { ...userData, avatar: avatarUrl };
+      // === BAGIAN YANG DIPERBAIKI ===
+      // Arahkan ke endpoint gambar yang ada di index.js
+      const newAvatarUrl = `/api/avatar/${userData.id}`; 
+      
+      const updatedUser = { 
+        ...userData, 
+        avatar: newAvatarUrl 
+      };
 
-      setUserData(updatedUser);
+      // 1. Update state agar re-render
+      setUserData(updatedUser); 
+
+      // 2. Simpan ke sessionStorage agar tidak hilang saat di-refresh
       sessionStorage.setItem('userData', JSON.stringify(updatedUser));
       sessionStorage.setItem('currentUser', JSON.stringify(updatedUser));
+
+      // 3. Beritahu Header.jsx untuk ikut mengganti foto profil
+      window.dispatchEvent(new CustomEvent('userDataUpdated', { detail: updatedUser }));
+      // ==============================
 
       setSuccessMessage('Foto profil berhasil diupdate!');
       setTimeout(() => setSuccessMessage(''), 2000);
@@ -486,7 +505,9 @@ const Profile = () => {
           <section className="profile-header">
             <div className="avatar-wrapper">
               <img
-                src={userData.avatar || "/asset/profile.png"}
+                src={userData.avatar
+      ? `${userData.avatar}?t=${Date.now()}`   // tambahkan query string agar cache bust
+      : "/asset/profile.png"}
                 alt="Profile"
                 className="profile-avatar"
               />
