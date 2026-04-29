@@ -17,7 +17,7 @@ Backend API untuk manajemen user dengan Express.js dan Prisma ORM.
 - **Express.js** - Web framework
 - **Prisma** - Database ORM
 - **Multer** - File upload handling
-- **SQLite** - Database (default)
+- **Mongodb** - Database (default)
 
 ## Prerequisites
 
@@ -33,15 +33,16 @@ npm install
 
 2. Setup database:
 ```bash
-npx prisma migrate dev
+npx prisma generate
 ```
 
-3. Jalankan server:
+3. Jalankan server database dan website:
 ```bash
-npm start
+npx tsx index
+npm run dev
 ```
 
-Server akan berjalan di `http://localhost:3000`
+Server akan berjalan di `http://localhost:3000` dan `http://localhost:5173`
 
 ## API Endpoints
 
