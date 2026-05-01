@@ -60,7 +60,7 @@ const History = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)} // Update pencarian saat mengetik
             />
-          </div>
+          </div>  
         </form>
       </div>
       <section className="history-section">
