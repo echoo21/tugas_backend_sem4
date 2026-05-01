@@ -83,6 +83,38 @@ class TransactionService extends BaseService {
     const updatedUser = await this.prisma.users.findUnique({ where: { id: userId } });
     return { newPoints: updatedUser.points, rewardValue: voucher.rewardValue };
   }
+
+  async getLeaderboard() {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    // Aggregate total spent per user in the last 30 days
+    const result = await this.prisma.transactions.groupBy({
+      by: ['userId'],
+      where: {
+        createdAt: { gte: thirtyDaysAgo },
+        status: 'SUCCESS'
+      },
+      _sum: { totalPaid: true },
+      orderBy: { _sum: { totalPaid: 'desc' } },
+      take: 10
+    });
+
+    // Enrich with username from users table
+    const enriched = await Promise.all(result.map(async (entry, index) => {
+      const user = await this.prisma.users.findUnique({
+        where: { id: entry.userId },
+        select: { username: true }
+      });
+      return {
+        rank: index + 1,
+        username: user?.username ?? 'Unknown',
+        totalSpent: entry._sum.totalPaid ?? 0
+      };
+    }));
+
+    return enriched;
+  }
 }
 
 export default TransactionService;

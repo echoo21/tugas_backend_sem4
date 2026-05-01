@@ -63,6 +63,7 @@ const Profile = () => {
             birthday: user.birthday || '',
             gender: user.gender || ''
           });
+
         } else {
           setUserData(null);
         }

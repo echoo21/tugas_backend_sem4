@@ -208,6 +208,16 @@ app.post('/api/redeem', async (req, res) => {
   }
 });
 
+// Get leaderboard (top spenders last 30 days)
+app.get('/api/leaderboard', async (req, res) => {
+  try {
+    const data = await transactionService.getLeaderboard();
+    res.json({ success: true, data });
+  } catch (err) {
+    transactionService.handleError(res, err, "Gagal mengambil leaderboard");
+  }
+});
+
 // Delete user
 app.delete('/api/deleteUser/:userId', async (req, res) => {
   try {
