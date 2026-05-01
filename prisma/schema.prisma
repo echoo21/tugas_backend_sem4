@@ -118,3 +118,15 @@ model vouchers {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
+
+// ==========================================
+// 6. POINT CONFIGS
+// Tier configuration for dynamic point rewards
+// ==========================================
+model point_configs {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  tierName    String  @unique
+  minSpent    Float
+  rewardRate  Float
+  levelNumber Int     @unique
+}

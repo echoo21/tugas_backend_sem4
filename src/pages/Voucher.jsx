@@ -61,8 +61,8 @@ const Voucher = () => {
       } else {
         setNotif({ msg: result.message, id: Date.now() });
       }
-    } catch (error) {
-      setNotif({ msg: "Gagal terhubung ke server.", id: Date.now() });
+    } catch (_) {
+      setNotif({ msg: `Gagal terhubung ke server: ${_.message}`, id: Date.now() });
     }
   };
 

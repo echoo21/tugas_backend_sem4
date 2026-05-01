@@ -10,7 +10,7 @@ const Login = () => {
     password: ''
   });
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -22,14 +22,14 @@ const Login = () => {
       [id]: value
     }));
     setError('');
-    setSuccess('');
+    setSuccessMessage('');
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
+    setSuccessMessage('');
     setIsLoading(true);
 
     // Validasi input
@@ -78,7 +78,7 @@ const Login = () => {
       });
 
       // Tampilkan success message
-      setSuccess(`Login berhasil! Selamat datang ${userData.username}`);
+      setSuccessMessage(`Login berhasil! Selamat datang ${userData.username}`);
 
       // Kirim custom event untuk memberi tahu komponen lain
       window.dispatchEvent(new Event('userLoggedIn'));
@@ -198,9 +198,9 @@ const Login = () => {
           <h2>Login</h2>
           
           {/* Success Message */}
-          {success && (
+          {successMessage && (
             <div className="alert alert-success" role="alert">
-              {success}
+              {successMessage}
             </div>
           )}
 

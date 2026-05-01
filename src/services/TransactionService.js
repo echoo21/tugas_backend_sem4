@@ -1,4 +1,5 @@
 import BaseService from './BaseService.js';
+import PointConfigService from './PointConfigService.js';
 
 class TransactionService extends BaseService {
 
@@ -37,14 +38,19 @@ class TransactionService extends BaseService {
       });
     }
 
-    // Tambah poin reward (1% dari total pembayaran)
-    const rewardPoints = Math.floor(billing.totalPaid * 0.01);
+    // Tambah poin reward (dynamic rate based on user tier)
+    const pointConfigService = new PointConfigService(this.prisma);
+    const config = await pointConfigService.getConfigForUser(userId);
+    const rewardPoints = Math.floor(billing.totalPaid * config.rewardRate);
     if (rewardPoints > 0) {
       await this.prisma.users.update({
         where: { id: userId },
         data: { points: { increment: rewardPoints } }
       });
     }
+
+    // Update user level based on new spending
+    await pointConfigService.recalculateLevel(userId);
 
     return newTransaction;
   }

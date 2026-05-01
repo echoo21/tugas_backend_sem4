@@ -2,13 +2,14 @@ import express from 'express';
 import { prisma } from './lib/prisma';
 import multer from 'multer';
 import path from 'path';
-import { UserService, TransactionService } from './src/services/index.js';
+import { UserService, TransactionService, PointConfigService } from './src/services/index.js';
 
 const app = express();
 
 // Inisialisasi service class
 const userService = new UserService(prisma);
 const transactionService = new TransactionService(prisma);
+const pointConfigService = new PointConfigService(prisma);
 app.use(express.json());
 
 // Setup multer dengan MEMORY STORAGE (gambar disimpan di RAM, bukan di disk)
@@ -215,6 +216,17 @@ app.get('/api/leaderboard', async (req, res) => {
     res.json({ success: true, data });
   } catch (err) {
     transactionService.handleError(res, err, "Gagal mengambil leaderboard");
+  }
+});
+
+// Get user's point tier config
+app.get('/api/points/config/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const config = await pointConfigService.getConfigForUser(userId);
+    res.json({ success: true, data: config });
+  } catch (err) {
+    pointConfigService.handleError(res, err, "Gagal mengambil konfigurasi poin");
   }
 });
 

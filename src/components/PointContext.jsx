@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useEffect } from 'react';
 
 export const PointContext = createContext();
@@ -35,8 +36,9 @@ export const PointProvider = ({ children }) => {
       const user = JSON.parse(sessionData);
       if (user.id) {
         // Tarik poin dari MongoDB!
-        fetchPointsFromDB(user.id);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+        (async () => {
+          await fetchPointsFromDB(user.id);
+        })();
       }
     }
 

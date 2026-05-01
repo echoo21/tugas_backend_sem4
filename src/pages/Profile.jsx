@@ -261,7 +261,7 @@ const Profile = () => {
       setUserData(updatedUser);
 
       // Update sessionStorage (remove password before storing)
-      const { password, confirmPassword, ...userDataWithoutSensitive } = updatedUser;
+      const { password: _password, confirmPassword: _confirmPassword, ...userDataWithoutSensitive } = updatedUser;
       sessionStorage.setItem('userData', JSON.stringify(userDataWithoutSensitive));
       sessionStorage.setItem('currentUser', JSON.stringify(userDataWithoutSensitive));
 

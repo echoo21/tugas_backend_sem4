@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { PointContext } from '../components/PointContext';
 import { TransactionContext } from '../components/TransactionContext';
@@ -19,13 +19,29 @@ const Pembayaran = () => {
   })();
 
   // Ambil poin dan fungsi addPoints dari Context
-  const { points, addPoints, fetchPointsFromDB } = useContext(PointContext);
-
-  // AMBIL fungsi addTransaction dari context
-  const { addTransaction } = useContext(TransactionContext);
+  const { points, fetchPointsFromDB } = useContext(PointContext);
 
   // State untuk menentukan apakah user mau pakai poin atau tidak
   const [usePoints, setUsePoints] = useState(false);
+
+  // State untuk konfigurasi poin dinamis
+  const [pointConfig, setPointConfig] = useState(null);
+  const [rewardRate, setRewardRate] = useState(0.01);
+
+  // Fetch konfigurasi poin user
+  useEffect(() => {
+    if (sessionUser?.id) {
+      fetch(`/api/points/config/${sessionUser.id}`)
+        .then(res => res.json())
+        .then(result => {
+          if (result.success && result.data) {
+            setPointConfig(result.data);
+            setRewardRate(result.data.rewardRate);
+          }
+        })
+        .catch(err => console.error("Failed to fetch point config:", err));
+    }
+  }, [sessionUser?.id]);
 
   // Kalkulasi Harga
   const hargaAwal = diamond?.price || 0;
@@ -181,7 +197,8 @@ const Pembayaran = () => {
 
                 <div className="rewards-box">
                   <i className="bi bi-coin"></i>
-                  Anda akan mendapatkan Rewards senilai Rp. {Math.floor(totalSebelumDiskon * 0.01).toLocaleString('id-ID')}
+                  Anda akan mendapatkan Rewards senilai Rp. {Math.floor(totalSebelumDiskon * rewardRate).toLocaleString('id-ID')}
+                  {pointConfig && <span> (Tier: {pointConfig.tierName})</span>}
                 </div>
 
                 <div className="total-payment">
